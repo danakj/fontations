@@ -9,6 +9,7 @@ pub use read_fonts::tables::stat::AxisValueTableFlags;
 
 /// [STAT](https://docs.microsoft.com/en-us/typography/opentype/spec/stat) (Style Attributes Table)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Stat {
     /// Offset in bytes from the beginning of the STAT table to the
     /// start of the design axes array. If designAxisCount is zero, set
@@ -92,6 +93,7 @@ impl<'a> FontRead<'a> for Stat {
 
 /// [Axis Records](https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-records)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisRecord {
     /// A tag identifying the axis of design variation.
     pub axis_tag: Tag,
@@ -142,6 +144,7 @@ impl FromObjRef<read_fonts::tables::stat::AxisRecord> for AxisRecord {
 
 /// An array of [AxisValue] tables.
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisValueArray {
     /// Array of offsets to axis value tables, in bytes from the start
     /// of the axis value offsets array.
@@ -191,6 +194,7 @@ impl<'a> FromTableRef<read_fonts::tables::stat::AxisValueArray<'a>> for AxisValu
 
 /// [Axis Value Tables](https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-tables)
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum AxisValue {
     Format1(AxisValueFormat1),
     Format2(AxisValueFormat2),
@@ -318,6 +322,7 @@ impl<'a> FontRead<'a> for AxisValue {
 
 /// [Axis value table format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-table-format-1)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisValueFormat1 {
     /// Zero-base index into the axis record array identifying the axis
     /// of design variation to which the axis value table applies. Must
@@ -389,6 +394,7 @@ impl<'a> FontRead<'a> for AxisValueFormat1 {
 
 /// [Axis value table format 2](https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-table-format-2)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisValueFormat2 {
     /// Zero-base index into the axis record array identifying the axis
     /// of design variation to which the axis value table applies. Must
@@ -474,6 +480,7 @@ impl<'a> FontRead<'a> for AxisValueFormat2 {
 
 /// [Axis value table format 3](https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-table-format-3)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisValueFormat3 {
     /// Zero-base index into the axis record array identifying the axis
     /// of design variation to which the axis value table applies. Must
@@ -551,6 +558,7 @@ impl<'a> FontRead<'a> for AxisValueFormat3 {
 
 /// [Axis value table format 4](https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-table-format-4)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisValueFormat4 {
     /// Flags — see below for details.
     pub flags: AxisValueTableFlags,
@@ -626,6 +634,7 @@ impl<'a> FontRead<'a> for AxisValueFormat4 {
 
 /// Part of [AxisValueFormat4]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AxisValueRecord {
     /// Zero-base index into the axis record array identifying the axis
     /// to which this value applies. Must be less than designAxisCount.

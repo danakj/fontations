@@ -408,6 +408,7 @@ pub(crate) fn generate_group_compile(
     Ok(quote! {
         #( #docs)*
         #[derive(Debug, Clone)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub enum #name {
             #( #variant_decls, )*
         }
@@ -495,6 +496,7 @@ pub(crate) fn generate_format_compile(
     Ok(quote! {
         #( #docs )*
         #[derive(Clone, Debug)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub enum #name {
             #( #variants ),*
         }

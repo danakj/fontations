@@ -6,6 +6,7 @@
 use crate::codegen_prelude::*;
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct KindsOfOffsets {
     /// The major/minor version of the GDEF table
     pub version: MajorMinor,
@@ -133,6 +134,7 @@ impl<'a> FontRead<'a> for KindsOfOffsets {
 }
 
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct KindsOfArraysOfOffsets {
     /// A normal array offset
     pub nonnullables: Vec<OffsetMarker<Dummy>>,
@@ -245,6 +247,7 @@ impl<'a> FontRead<'a> for KindsOfArraysOfOffsets {
 }
 
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct KindsOfArrays {
     pub version: u16,
     /// an array of scalars
@@ -364,6 +367,7 @@ impl<'a> FontRead<'a> for KindsOfArrays {
 }
 
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Dummy {
     pub value: u16,
 }
@@ -402,6 +406,7 @@ impl<'a> FontRead<'a> for Dummy {
 }
 
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Shmecord {
     pub length: u16,
     pub breadth: u32,

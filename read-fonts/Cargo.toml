@@ -13,9 +13,11 @@ std = ["font-types/std"]
 codegen_test = []
 traversal = ["std"]
 default = ["traversal"]
+serde = ["dep:serde", "font-types/serde"]
 
 [dependencies]
 font-types = { version = "0.1.5", path = "../font-types" }
+serde = { version = "1.0", features = ["derive"], optional = true }
 
 [dev-dependencies]
 font-test-data = { path = "../font-test-data" }

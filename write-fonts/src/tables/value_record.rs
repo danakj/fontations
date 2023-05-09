@@ -12,6 +12,7 @@ use crate::{
 };
 
 #[derive(Clone, Default, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ValueRecord {
     pub x_placement: Option<i16>,
     pub y_placement: Option<i16>,

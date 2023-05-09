@@ -41,3 +41,39 @@ fn ligaturesubstformat1() {
     let dumped = crate::write::dump_table(&table).unwrap();
     assert_hex_eq!(test_data::LIGATURESUBSTFORMAT1_TABLE, &dumped);
 }
+
+#[cfg(feature = "serde")]
+#[test]
+fn test_serde() {
+    use crate::tables::layout::*;
+    let gsub = Gsub::new(
+        ScriptList::new(vec![ScriptRecord::new(
+            Tag::new(b"Piqd"),
+            Script::new(
+                None,
+                vec![LangSysRecord::new(Tag::new(b"KLI"), LangSys::new(vec![0]))],
+            ),
+        )]),
+        FeatureList::new(vec![FeatureRecord::new(
+            Tag::new(b"kern"),
+            Feature::new(None, vec![0]),
+        )]),
+        SubstitutionLookupList::new(vec![SubstitutionLookup::Single(Lookup::new(
+            LookupFlag::empty(),
+            vec![SingleSubst::Format1(SingleSubstFormat1::new(
+                CoverageTable::format_1(vec![GlyphId::new(101)]),
+                -1,
+            ))],
+            0,
+        ))]),
+    );
+
+    let dumped = bincode::serialize(&gsub).unwrap();
+    let loaded: Gsub = bincode::deserialize(&dumped).unwrap();
+
+    assert_eq!(loaded.script_list.script_records[0].script_tag, "Piqd");
+    assert_eq!(
+        loaded.script_list.script_records[0].script.lang_sys_records[0].lang_sys_tag,
+        "KLI "
+    );
+}

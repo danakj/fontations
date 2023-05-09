@@ -31,6 +31,7 @@ macro_rules! lookup_type {
 macro_rules! table_newtype {
     ($name:ident, $inner:ident, $read_type:path) => {
         #[derive(Clone, Debug, Default)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub struct $name($inner);
 
         impl std::ops::Deref for $name {
@@ -145,6 +146,7 @@ pub trait LookupType {
 }
 
 #[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum FeatureParams {
     StylisticSet(StylisticSetParams),
     Size(SizeParams),

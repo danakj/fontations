@@ -10,6 +10,7 @@ pub use read_fonts::tables::gpos::ValueFormat;
 /// [Class Definition Table Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2#class-definition-table-format-1)
 /// [GPOS Version 1.0](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#gpos-header)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Gpos {
     /// Offset to ScriptList table, from beginning of GPOS table
     pub script_list: OffsetMarker<ScriptList>,
@@ -97,6 +98,7 @@ impl<'a> FontRead<'a> for Gpos {
 
 /// A [GPOS Lookup](https://learn.microsoft.com/en-us/typography/opentype/spec/gpos#gsubLookupTypeEnum) subtable.
 #[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum PositionLookup {
     Single(Lookup<SinglePos>),
     Pair(Lookup<PairPos>),
@@ -205,6 +207,7 @@ impl FontWrite for ValueFormat {
 /// [Anchor Tables](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#anchor-tables)
 /// position one glyph with respect to another.
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum AnchorTable {
     Format1(AnchorFormat1),
     Format2(AnchorFormat2),
@@ -292,6 +295,7 @@ impl<'a> FontRead<'a> for AnchorTable {
 
 /// [Anchor Table Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#anchor-table-format-1-design-units): Design Units
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AnchorFormat1 {
     /// Horizontal value, in design units
     pub x_coordinate: i16,
@@ -345,6 +349,7 @@ impl<'a> FontRead<'a> for AnchorFormat1 {
 
 /// [Anchor Table Format 2](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#anchor-table-format-2-design-units-plus-contour-point): Design Units Plus Contour Point
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AnchorFormat2 {
     /// Horizontal value, in design units
     pub x_coordinate: i16,
@@ -403,6 +408,7 @@ impl<'a> FontRead<'a> for AnchorFormat2 {
 
 /// [Anchor Table Format 3](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#anchor-table-format-3-design-units-plus-device-or-variationindex-tables): Design Units Plus Device or VariationIndex Tables
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AnchorFormat3 {
     /// Horizontal value, in design units
     pub x_coordinate: i16,
@@ -484,6 +490,7 @@ impl<'a> FontRead<'a> for AnchorFormat3 {
 
 /// [Mark Array Table](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#mark-array-table)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MarkArray {
     /// Array of MarkRecords, ordered by corresponding glyphs in the
     /// associated mark Coverage table.
@@ -542,6 +549,7 @@ impl<'a> FontRead<'a> for MarkArray {
 
 /// Part of [MarkArray]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MarkRecord {
     /// Class defined for the associated mark.
     pub mark_class: u16,
@@ -590,6 +598,7 @@ impl FromObjRef<read_fonts::tables::gpos::MarkRecord> for MarkRecord {
 
 /// [Lookup Type 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#lookup-type-1-single-adjustment-positioning-subtable): Single Adjustment Positioning Subtable
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum SinglePos {
     Format1(SinglePosFormat1),
     Format2(SinglePosFormat2),
@@ -657,6 +666,7 @@ impl<'a> FontRead<'a> for SinglePos {
 
 /// [Single Adjustment Positioning Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#single-adjustment-positioning-format-1-single-positioning-value): Single Positioning Value
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SinglePosFormat1 {
     /// Offset to Coverage table, from beginning of SinglePos subtable.
     pub coverage: OffsetMarker<CoverageTable>,
@@ -719,6 +729,7 @@ impl<'a> FontRead<'a> for SinglePosFormat1 {
 
 /// [Single Adjustment Positioning Format 2](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#single-adjustment-positioning-format-2-array-of-positioning-values): Array of Positioning Values
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SinglePosFormat2 {
     /// Offset to Coverage table, from beginning of SinglePos subtable.
     pub coverage: OffsetMarker<CoverageTable>,
@@ -791,6 +802,7 @@ impl<'a> FontRead<'a> for SinglePosFormat2 {
 
 /// [Lookup Type 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#lookup-type-1-single-adjustment-positioning-subtable): Single Adjustment Positioning Subtable
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum PairPos {
     Format1(PairPosFormat1),
     Format2(PairPosFormat2),
@@ -868,6 +880,7 @@ impl<'a> FontRead<'a> for PairPos {
 
 /// [Pair Adjustment Positioning Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#pair-adjustment-positioning-format-1-adjustments-for-glyph-pairs): Adjustments for Glyph Pairs
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PairPosFormat1 {
     /// Offset to Coverage table, from beginning of PairPos subtable.
     pub coverage: OffsetMarker<CoverageTable>,
@@ -937,6 +950,7 @@ impl<'a> FontRead<'a> for PairPosFormat1 {
 
 /// Part of [PairPosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PairSet {
     /// Array of PairValueRecords, ordered by glyph ID of the second
     /// glyph.
@@ -991,6 +1005,7 @@ impl<'a> FromTableRef<read_fonts::tables::gpos::PairSet<'a>> for PairSet {}
 
 /// Part of [PairSet]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PairValueRecord {
     /// Glyph ID of second glyph in the pair (first glyph is listed in
     /// the Coverage table).
@@ -1046,6 +1061,7 @@ impl FromObjRef<read_fonts::tables::gpos::PairValueRecord> for PairValueRecord {
 
 /// [Pair Adjustment Positioning Format 2](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#pair-adjustment-positioning-format-2-class-pair-adjustment): Class Pair Adjustment
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PairPosFormat2 {
     /// Offset to Coverage table, from beginning of PairPos subtable.
     pub coverage: OffsetMarker<CoverageTable>,
@@ -1143,6 +1159,7 @@ impl<'a> FontRead<'a> for PairPosFormat2 {
 
 /// Part of [PairPosFormat2]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Class1Record {
     /// Array of Class2 records, ordered by classes in classDef2.
     pub class2_records: Vec<Class2Record>,
@@ -1191,6 +1208,7 @@ impl FromObjRef<read_fonts::tables::gpos::Class1Record<'_>> for Class1Record {
 
 /// Part of [PairPosFormat2]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Class2Record {
     /// Positioning for first glyph — empty if valueFormat1 = 0.
     pub value_record1: ValueRecord,
@@ -1233,6 +1251,7 @@ impl FromObjRef<read_fonts::tables::gpos::Class2Record> for Class2Record {
 
 /// [Cursive Attachment Positioning Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#cursive-attachment-positioning-format1-cursive-attachment): Cursvie attachment
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct CursivePosFormat1 {
     /// Offset to Coverage table, from beginning of CursivePos subtable.
     pub coverage: OffsetMarker<CoverageTable>,
@@ -1300,6 +1319,7 @@ impl<'a> FontRead<'a> for CursivePosFormat1 {
 
 /// Part of [CursivePosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct EntryExitRecord {
     /// Offset to entryAnchor table, from beginning of CursivePos
     /// subtable (may be NULL).
@@ -1356,6 +1376,7 @@ impl FromObjRef<read_fonts::tables::gpos::EntryExitRecord> for EntryExitRecord {
 
 /// [Mark-to-Base Attachment Positioning Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#mark-to-base-attachment-positioning-format-1-mark-to-base-attachment-point): Mark-to-base Attachment Point
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MarkBasePosFormat1 {
     /// Offset to markCoverage table, from beginning of MarkBasePos
     /// subtable.
@@ -1444,6 +1465,7 @@ impl<'a> FontRead<'a> for MarkBasePosFormat1 {
 
 /// Part of [MarkBasePosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct BaseArray {
     /// Array of BaseRecords, in order of baseCoverage Index.
     pub base_records: Vec<BaseRecord>,
@@ -1497,6 +1519,7 @@ impl<'a> FromTableRef<read_fonts::tables::gpos::BaseArray<'a>> for BaseArray {}
 
 /// Part of [BaseArray]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct BaseRecord {
     /// Array of offsets (one per mark class) to Anchor tables. Offsets
     /// are from beginning of BaseArray table, ordered by class
@@ -1548,6 +1571,7 @@ impl FromObjRef<read_fonts::tables::gpos::BaseRecord<'_>> for BaseRecord {
 
 /// [Mark-to-Ligature Positioning Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#mark-to-ligature-attachment-positioning-format-1-mark-to-ligature-attachment): Mark-to-Ligature Attachment
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MarkLigPosFormat1 {
     /// Offset to markCoverage table, from beginning of MarkLigPos
     /// subtable.
@@ -1636,6 +1660,7 @@ impl<'a> FontRead<'a> for MarkLigPosFormat1 {
 
 /// Part of [MarkLigPosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LigatureArray {
     /// Array of offsets to LigatureAttach tables. Offsets are from
     /// beginning of LigatureArray table, ordered by ligatureCoverage
@@ -1691,6 +1716,7 @@ impl<'a> FromTableRef<read_fonts::tables::gpos::LigatureArray<'a>> for LigatureA
 
 /// Part of [MarkLigPosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LigatureAttach {
     /// Array of Component records, ordered in writing direction.
     pub component_records: Vec<ComponentRecord>,
@@ -1744,6 +1770,7 @@ impl<'a> FromTableRef<read_fonts::tables::gpos::LigatureAttach<'a>> for Ligature
 
 /// Part of [MarkLigPosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ComponentRecord {
     /// Array of offsets (one per class) to Anchor tables. Offsets are
     /// from beginning of LigatureAttach table, ordered by class
@@ -1798,6 +1825,7 @@ impl FromObjRef<read_fonts::tables::gpos::ComponentRecord<'_>> for ComponentReco
 
 /// [Mark-to-Mark Attachment Positioning Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#mark-to-mark-attachment-positioning-format-1-mark-to-mark-attachment): Mark-to-Mark Attachment
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MarkMarkPosFormat1 {
     /// Offset to Combining Mark Coverage table, from beginning of
     /// MarkMarkPos subtable.
@@ -1886,6 +1914,7 @@ impl<'a> FontRead<'a> for MarkMarkPosFormat1 {
 
 /// Part of [MarkMarkPosFormat1]Class2Record
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Mark2Array {
     /// Array of Mark2Records, in Coverage order.
     pub mark2_records: Vec<Mark2Record>,
@@ -1939,6 +1968,7 @@ impl<'a> FromTableRef<read_fonts::tables::gpos::Mark2Array<'a>> for Mark2Array {
 
 /// Part of [MarkMarkPosFormat1]
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Mark2Record {
     /// Array of offsets (one per class) to Anchor tables. Offsets are
     /// from beginning of Mark2Array table, in class order (offsets may
@@ -1990,6 +2020,7 @@ impl FromObjRef<read_fonts::tables::gpos::Mark2Record<'_>> for Mark2Record {
 
 /// [Extension Positioning Subtable Format 1](https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#extension-positioning-subtable-format-1)
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ExtensionPosFormat1<T> {
     /// Lookup type of subtable referenced by extensionOffset (i.e. the
     /// extension subtable).
@@ -2047,6 +2078,7 @@ where
 
 /// A [GPOS Extension Positioning](https://learn.microsoft.com/en-us/typography/opentype/spec/gpos#lookuptype-9-extension-positioning) subtable
 #[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum ExtensionSubtable {
     Single(ExtensionPosFormat1<SinglePos>),
     Pair(ExtensionPosFormat1<PairPos>),
