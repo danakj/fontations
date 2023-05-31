@@ -1,5 +1,6 @@
 //! splitting layout subtables
 
+use std::collections::BTreeSet;
 use std::collections::{HashMap, HashSet};
 
 use font_types::{GlyphId, Offset16};
@@ -170,6 +171,30 @@ fn split_off_ppf1(graph: &mut Graph, subtable: ObjectId, start: u16, end: u16) -
     new_ppf1
 }
 
+fn split_pair_post_format_2(graph: &mut Graph, subtable: ObjectId) -> Option<Vec<ObjectId>> {
+    const BASE_SIZE: usize = 8 * u16::RAW_BYTE_LEN;
+    let data = &graph.objects[&subtable];
+    let pp2 = data.reparse::<rgpos::PairPosFormat2>().unwrap();
+    let class_def_2_id = data.offsets[2].object;
+    let class_def_2_size = graph.objects[&class_def_2_id].bytes.len();
+    let coverage = pp2.coverage().unwrap();
+    let class_def1 = pp2.class_def1().unwrap();
+    let estimator = ClassDefSizeEstimator::new(coverage, class_def1);
+
+    let class1_count = pp2.class1_count();
+    let class2_count = pp2.class2_count();
+    let class1_record_size = class2_count as usize
+        * (pp2.value_format1().record_byte_len() + pp2.value_format2().record_byte_len());
+
+    let value_1_len = pp2.value_format1().bits().count_ones();
+    let value_2_len = pp2.value_format2().bits().count_ones();
+    let total_value_len = value_1_len + value_2_len;
+
+    //let gid_and_class = coverage.iter().map(|gid| (gid, class_def1.get(gid)));
+
+    None
+}
+
 fn split_coverage(coverage: &rlayout::CoverageTable, start: u16, end: u16) -> TableData {
     assert!(start <= end);
     let len = (end - start) + 1;
@@ -232,6 +257,57 @@ fn split_range_record(
         GlyphId::new(end_glyph),
         new_cov_start,
     ))
+}
+
+struct ClassDefSizeEstimator {
+    consecutive_gids: bool,
+    num_ranges_per_class: HashMap<u16, u16>,
+    glyphs_per_class: HashMap<u16, BTreeSet<GlyphId>>,
+}
+
+impl ClassDefSizeEstimator {
+    fn new(coverage: rlayout::CoverageTable, classdef: rlayout::ClassDef) -> Self {
+        let mut consecutive_gids = true;
+        let mut last_gid = None;
+        let mut glyphs_per_class = HashMap::new();
+        for (gid, class) in coverage.iter().map(|gid| (gid, classdef.get(gid))) {
+            if let Some(last) = last_gid.take() {
+                if last + 1 != gid.to_u16() {
+                    consecutive_gids = false;
+                }
+            }
+            last_gid = Some(gid.to_u16());
+            glyphs_per_class
+                .entry(class)
+                .or_insert(BTreeSet::default())
+                .insert(gid);
+        }
+
+        // now compute the number of ranges manually, skipping class 0
+        let mut num_ranges_per_class = HashMap::with_capacity(glyphs_per_class.len());
+        for (class, glyphs) in glyphs_per_class.iter().filter(|x| *x.0 != 0) {
+            let num_ranges = count_num_ranges(glyphs);
+            num_ranges_per_class.insert(*class, num_ranges);
+        }
+        ClassDefSizeEstimator {
+            consecutive_gids,
+            num_ranges_per_class,
+            glyphs_per_class,
+        }
+    }
+}
+
+fn count_num_ranges(glyphs: &BTreeSet<GlyphId>) -> u16 {
+    let mut count = 0;
+    let mut last = None;
+    for gid in glyphs {
+        match (last.take(), gid.to_u16()) {
+            (Some(prev), current) if current == prev + 1 => (), // in same range
+            _ => count += 1, // first glyph or glyph that starts new range
+        }
+        last = Some(gid.to_u16());
+    }
+    count
 }
 
 #[cfg(test)]
@@ -398,5 +474,19 @@ mod tests {
 
         // ensure that the PairSet tables at the split boundaries are as expected
         assert_eq!(sub1.pair_set_count() + sub2.pair_set_count(), N_GLYPHS);
+    }
+
+    #[test]
+    fn count_glyph_ranges() {
+        fn make_input(glyphs: &[u16]) -> BTreeSet<GlyphId> {
+            glyphs.iter().copied().map(GlyphId::new).collect()
+        }
+
+        assert_eq!(count_num_ranges(&make_input(&[])), 0);
+        assert_eq!(count_num_ranges(&make_input(&[1])), 1);
+        assert_eq!(count_num_ranges(&make_input(&[1, 2, 3])), 1);
+        assert_eq!(count_num_ranges(&make_input(&[1, 2, 3])), 1);
+        assert_eq!(count_num_ranges(&make_input(&[1, 2, 3, 5])), 2);
+        assert_eq!(count_num_ranges(&make_input(&[1, 2, 3, 5, 6, 7, 10])), 3);
     }
 }
